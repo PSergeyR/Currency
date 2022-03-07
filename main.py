@@ -20,7 +20,7 @@ split_lst = str(lst[10])
 #print(split_lst)
 res2 = split_lst.replace('>', ' ').split('<')
 print((res2[8] + ','+ res2[10]).replace('name', '').replace('value', ':'))
-#
+
 
 
 
