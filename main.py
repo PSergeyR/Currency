@@ -2,13 +2,15 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 import telebot
+from telebot import types
+
 
 
 def date_today():
 
     date = str(datetime.now()).split(' ')  # Откидываем лишнюю информацию из выдачи
     date_now = date[0].replace('-', '/').split('/')  # Заменяем - на /
-    today = str(date_now[2]+ "/" + date_now[1] + "/" + date_now[0])  # Разворачиваем дату как нужно для запроса
+    today = str(date_now[2] + "/" + date_now[1] + "/" + date_now[0])  # Разворачиваем дату как нужно для запроса
     return today
 
 
@@ -21,13 +23,16 @@ def course(valute):
     result = str(soup)
     lst = result.split('</valute>')  # Делаем список из xml таким образом из-за специфики форматирования файла
     split_lst = str(lst[valute])  # Выбираем нужную валюту для выдачи
-    # print(split_lst)
+    #print(lst)
     res2 = split_lst.replace('>', ' ').split('<')  # Отрезаем все лишнее
-    return (res2[8] + ',' + res2[10]).replace('name', '').replace('value', ':')  # Делаем ноормальную выдачу
+
+    return (res2[8] + ',' + res2[10]).replace('name', '').replace('value', ':') # Делаем ноормальную выдачу
+
 
 open_token = open('token.txt', 'r')
 str_token = open_token.read()
 bot = telebot.TeleBot(str_token)
+
 
 @bot.message_handler(commands=["start"])
 def start(m, res=False):
@@ -48,14 +53,36 @@ bot = telebot.TeleBot(token())
 
 @bot.message_handler(commands=["start"])
 def start(m, res=False):
-    bot.send_message(m.chat.id, course(10))
+    # Добавляем две кнопки
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    item1 = types.KeyboardButton("дата")
+    item2 = types.KeyboardButton("курс")
+    markup.add(item1)
+    markup.add(item2)
+    bot.send_message(m.chat.id, 'Бот стартовал!', reply_markup=markup)
 
-# Получение сообщений от юзера
+
 
 
 @bot.message_handler(content_types=["text"])
 def handle_text(message):
+    # Если юзер прислал 1, выдаем ему случайный факт
+    if message.text.strip() == 'дата':
         bot.send_message(message.chat.id, 'Сегодня : ' + date_today())
+    # Если юзер прислал 2, выдаем умную мысль
+    elif message.text.strip() == 'курс':
+        bot.send_message(message.chat.id, 'Курс доллара на сегодняшнее число: ' + course(10))
+
+
+
+
+
+@bot.message_handler(content_types=["text"])
+def handle_text(message):
+    if message.text == 'дата':
+        bot.send_message(message.chat.id, 'Сегодня : ' + date_today())
+    if message.text == 'курс':
+        bot.send_message(message.chat.id, 'Курс доллара на сегодняшнее число:' + course(10))
 
 
 # Запускаем бота
