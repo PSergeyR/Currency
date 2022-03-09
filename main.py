@@ -24,9 +24,12 @@ def course(valute):
     lst = result.split('</valute>')  # Делаем список из xml таким образом из-за специфики форматирования файла
     split_lst = str(lst[valute])  # Выбираем нужную валюту для выдачи
     #print(lst)
-    res2 = split_lst.replace('>', ' ').split('<')  # Отрезаем все лишнее
+    res2 = split_lst.replace('>', ' ').split('<')
 
-    return (res2[8] + ',' + res2[10]).replace('name', '').replace('value', ':') # Делаем ноормальную выдачу
+
+    # Отрезаем все лишнее
+
+    return (res2[8] + ' ' + res2[10]).replace('name', '').replace('value', ':') # Делаем ноормальную выдачу
 
 
 open_token = open('token.txt', 'r')
@@ -66,12 +69,14 @@ def start(m, res=False):
 
 @bot.message_handler(content_types=["text"])
 def handle_text(message):
-    # Если юзер прислал 1, выдаем ему случайный факт
+    # Если юзер прислал 1, выдаем дату
     if message.text.strip() == 'дата':
         bot.send_message(message.chat.id, 'Сегодня : ' + date_today())
-    # Если юзер прислал 2, выдаем умную мысль
+        print(date_today())
+    # Если юзер прислал 2, выдаем курс
     elif message.text.strip() == 'курс':
-        bot.send_message(message.chat.id, 'Курс доллара на сегодняшнее число: ' + course(10))
+        bot.send_message(message.chat.id, 'Курс валют на сегодняшнее число: ' + course(10) + ',' '\n' + course(11))
+        print(course(10))
 
 
 
