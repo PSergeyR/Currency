@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import telebot
 from telebot import types
+import weather
 
 
 
@@ -60,8 +61,10 @@ def start(m, res=False):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton("дата")
     item2 = types.KeyboardButton("курс")
+    item3 = types.KeyboardButton("прогноз погоды")
     markup.add(item1)
     markup.add(item2)
+    markup.add(item3)
     bot.send_message(m.chat.id, 'Бот стартовал!', reply_markup=markup)
 
 
@@ -77,6 +80,9 @@ def handle_text(message):
     elif message.text.strip() == 'курс':
         bot.send_message(message.chat.id, 'Курс валют на сегодняшнее число: ' + course(10) + ',' '\n' + course(11))
         print(course(10))
+    elif message.text.strip()  == 'прогноз погоды':
+        bot.send_message(message.chat.id, 'прогноз на завтра, ' + date_today() + ' '
+                         + str(weather.weather_tomorrow()))
 
 
 
