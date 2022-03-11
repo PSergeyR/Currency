@@ -6,13 +6,21 @@ from telebot import types
 import weather
 
 
-
 def date_today():
 
     date = str(datetime.now()).split(' ')  # Откидываем лишнюю информацию из выдачи
     date_now = date[0].replace('-', '/').split('/')  # Заменяем - на /
     today = str(date_now[2] + "/" + date_now[1] + "/" + date_now[0])  # Разворачиваем дату как нужно для запроса
     return today
+
+
+def day_of_week(data):
+    list_day = ['Понедельник', 'Вторник', 'среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье']
+    return list_day[datetime.weekday(data)]
+
+def day_tomorrow(data):
+    list_day = ['Вторник', 'среду', 'Четверг', 'Пятницу', 'Субботу', 'Воскресенье', 'Понедельник']
+    return list_day[datetime.weekday(data)]
 
 
 def course(valute):
@@ -74,15 +82,16 @@ def start(m, res=False):
 def handle_text(message):
     # Если юзер прислал 1, выдаем дату
     if message.text.strip() == 'дата':
-        bot.send_message(message.chat.id, 'Сегодня : ' + date_today())
+        bot.send_message(message.chat.id, 'Сегодня ' + day_of_week(datetime.today()) + ': ' + date_today())
         print(date_today())
     # Если юзер прислал 2, выдаем курс
     elif message.text.strip() == 'курс':
-        bot.send_message(message.chat.id, 'Курс валют на сегодняшнее число: ' + course(10) + ',' '\n' + course(11))
+        bot.send_message(message.chat.id, 'Курс валют на сегодняшнее число: ' + course(10) + ',' '\n' + course(11) + ' (Центробанк)')
         print(course(10))
+    # Если юзер прислал 3, выдаем завтрашний прогноз
     elif message.text.strip()  == 'прогноз погоды':
-        bot.send_message(message.chat.id, 'прогноз на завтра, ' + date_today() + ' '
-                         + str(weather.weather_tomorrow()))
+        bot.send_message(message.chat.id, 'прогноз на завтра, ' +  ' '
+                         + str(weather.weather_tomorrow()) + ' (Гисметео)')
 
 
 
